@@ -159,4 +159,3 @@ def runTests(String command) {
         bat "venv\\Scripts\\activate && ${command}"
     }
 }
-```
