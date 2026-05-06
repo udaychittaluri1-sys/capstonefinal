@@ -11,8 +11,8 @@ pipeline {
         choice(name: 'BROWSER', choices: ['chrome', 'firefox', 'edge'], description: 'Browser for UI tests')
         choice(name: 'ENV', choices: ['dev', 'staging', 'production'], description: 'Target environment')
         booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Run in headless mode')
-        string(name: 'MARKERS', defaultValue: 'smoke', description: 'Pytest markers (smoke, regression, e2e, api, ui)')
-        string(name: 'PARALLEL_WORKERS', defaultValue: '4', description: 'Number of parallel workers')
+        string(name: 'MARKERS', defaultValue: 'smoke', description: 'Pytest markers')
+        string(name: 'PARALLEL_WORKERS', defaultValue: '4', description: 'Parallel workers')
     }
 
     environment {
@@ -35,21 +35,11 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh '''
-                            python3 -m venv venv
-                            . venv/bin/activate
-                            python -m pip install --upgrade pip
-                            pip install -r requirements.txt
-                        '''
+                        sh 'python3 -m venv venv'
+                        sh '. venv/bin/activate && python -m pip install --upgrade pip && pip install -r requirements.txt'
                     } else {
-                        // 🔥 FIX: Use full Python path
                         bat '"C:\\Users\\chitt\\AppData\\Local\\Programs\\Python\\Python311\\python.exe" -m venv venv'
-                        
-                        bat '''
-                            venv\\Scripts\\activate &&
-                            python -m pip install --upgrade pip &&
-                            pip install -r requirements.txt
-                        '''
+                        bat 'venv\\Scripts\\activate && python -m pip install --upgrade pip && pip install -r requirements.txt'
                     }
                 }
             }
@@ -59,15 +49,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh '''
-                            . venv/bin/activate
-                            python -c "import requests; r=requests.get('https://practice.expandtesting.com/notes/api/health-check'); print(f'API Status: {r.status_code}')"
-                        '''
+                        sh '. venv/bin/activate && python -c "import requests; r=requests.get(\'https://practice.expandtesting.com/notes/api/health-check\'); print(r.status_code)"'
                     } else {
-                        bat '''
-                            venv\\Scripts\\activate &&
-                            python -c "import requests; r=requests.get('https://practice.expandtesting.com/notes/api/health-check'); print(f'API Status: {r.status_code}')"
-                        '''
+                        bat 'venv\\Scripts\\activate && python -c "import requests; r=requests.get(\'https://practice.expandtesting.com/notes/api/health-check\'); print(r.status_code)"'
                     }
                 }
             }
@@ -77,8 +61,7 @@ pipeline {
             when { expression { params.MARKERS == 'smoke' || params.MARKERS == 'all' } }
             steps {
                 script {
-                    def cmd = "pytest tests/ -m smoke -v --alluredir=reports/allure-results --reruns=2 --reruns-delay=2"
-                    runTests(cmd)
+                    runTests("pytest tests/ -m smoke -v --alluredir=reports/allure-results --reruns=2 --reruns-delay=2")
                 }
             }
         }
@@ -87,8 +70,7 @@ pipeline {
             when { expression { params.MARKERS.contains('api') || params.MARKERS == 'all' } }
             steps {
                 script {
-                    def cmd = "pytest tests/test_notes_api.py -v --alluredir=reports/allure-results -n ${params.PARALLEL_WORKERS} --reruns=1"
-                    runTests(cmd)
+                    runTests("pytest tests/test_notes_api.py -v --alluredir=reports/allure-results -n ${params.PARALLEL_WORKERS}")
                 }
             }
         }
@@ -97,8 +79,7 @@ pipeline {
             when { expression { params.MARKERS.contains('ui') || params.MARKERS == 'all' } }
             steps {
                 script {
-                    def cmd = "pytest tests/test_login.py tests/test_notes_ui.py -v --alluredir=reports/allure-results --reruns=2"
-                    runTests(cmd)
+                    runTests("pytest tests/test_login.py tests/test_notes_ui.py -v --alluredir=reports/allure-results")
                 }
             }
         }
@@ -107,8 +88,7 @@ pipeline {
             when { expression { params.MARKERS.contains('e2e') || params.MARKERS == 'all' } }
             steps {
                 script {
-                    def cmd = "pytest tests/test_e2e.py -v --alluredir=reports/allure-results --reruns=2"
-                    runTests(cmd)
+                    runTests("pytest tests/test_e2e.py -v --alluredir=reports/allure-results")
                 }
             }
         }
@@ -117,8 +97,7 @@ pipeline {
             when { expression { params.MARKERS == 'regression' || params.MARKERS == 'all' } }
             steps {
                 script {
-                    def cmd = "pytest tests/ -v --alluredir=reports/allure-results -n ${params.PARALLEL_WORKERS} --reruns=2 --reruns-delay=2"
-                    runTests(cmd)
+                    runTests("pytest tests/ -v --alluredir=reports/allure-results -n ${params.PARALLEL_WORKERS}")
                 }
             }
         }
@@ -140,7 +119,7 @@ pipeline {
             echo '✅ All tests PASSED!'
         }
         failure {
-            echo '❌ Some tests FAILED. Check Allure report for details.'
+            echo '❌ Some tests FAILED. Check Allure report.'
         }
         cleanup {
             cleanWs()
@@ -149,7 +128,7 @@ pipeline {
 }
 
 // ============================================
-// Helper function
+// Helper Function
 // ============================================
 
 def runTests(String command) {
@@ -159,3 +138,4 @@ def runTests(String command) {
         bat "venv\\Scripts\\activate && ${command}"
     }
 }
+
