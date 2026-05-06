@@ -1,4 +1,4 @@
-```groovy
+
 // ============================================
 // Jenkins CI/CD Pipeline
 // UI + API Hybrid Automation Framework
