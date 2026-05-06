@@ -1,3 +1,4 @@
+```groovy
 // ============================================
 // Jenkins CI/CD Pipeline
 // UI + API Hybrid Automation Framework
@@ -22,6 +23,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -36,14 +38,16 @@ pipeline {
                         sh '''
                             python3 -m venv venv
                             . venv/bin/activate
-                            pip install --upgrade pip
+                            python -m pip install --upgrade pip
                             pip install -r requirements.txt
                         '''
                     } else {
+                        // 🔥 FIX: Use full Python path
+                        bat '"C:\\Users\\chitt\\AppData\\Local\\Programs\\Python\\Python311\\python.exe" -m venv venv'
+                        
                         bat '''
-                            python -m venv venv
-                            call venv\\Scripts\\activate
-                            pip install --upgrade pip
+                            venv\\Scripts\\activate &&
+                            python -m pip install --upgrade pip &&
                             pip install -r requirements.txt
                         '''
                     }
@@ -61,7 +65,7 @@ pipeline {
                         '''
                     } else {
                         bat '''
-                            call venv\\Scripts\\activate
+                            venv\\Scripts\\activate &&
                             python -c "import requests; r=requests.get('https://practice.expandtesting.com/notes/api/health-check'); print(f'API Status: {r.status_code}')"
                         '''
                     }
@@ -144,11 +148,15 @@ pipeline {
     }
 }
 
-// Helper function to run tests with venv activation
+// ============================================
+// Helper function
+// ============================================
+
 def runTests(String command) {
     if (isUnix()) {
         sh ". venv/bin/activate && ${command}"
     } else {
-        bat "call venv\\Scripts\\activate && ${command}"
+        bat "venv\\Scripts\\activate && ${command}"
     }
 }
+```
