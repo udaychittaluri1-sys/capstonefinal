@@ -1,0 +1,59 @@
+# ============================================
+# Framework Configuration
+# ============================================
+
+# --- Application URLs ---
+app:
+  base_url: "https://practice.expandtesting.com/notes/app"
+  api_base_url: "https://practice.expandtesting.com/notes/api"
+  login_url: "https://practice.expandtesting.com/notes/app/login"
+  register_url: "https://practice.expandtesting.com/notes/app/register"
+
+# --- Test User Credentials ---
+# These are dynamically created during test setup
+test_user:
+  name: "Test Automation User"
+  email: "testautomation_capstone@expandtesting.com"
+  password: "TestPass@123"
+
+# --- Browser Configuration ---
+browser:
+  name: "chrome"                 # chrome, firefox, edge
+  headless: false                # Run in headless mode
+  window_size: "1920,1080"       # Browser window size
+  implicit_wait: 10              # Implicit wait in seconds
+  explicit_wait: 15              # Default explicit wait in seconds
+  page_load_timeout: 30          # Page load timeout in seconds
+
+# --- API Configuration ---
+api:
+  timeout: 30                    # API request timeout in seconds
+  max_response_time: 2.0         # Maximum acceptable response time in seconds
+  retry_count: 3                 # Number of retries for failed API calls
+  retry_delay: 1                 # Delay between retries in seconds
+
+# --- Reporting ---
+reporting:
+  screenshot_on_failure: true    # Capture screenshot on test failure
+  allure_results_dir: "reports/allure-results"
+  html_report_dir: "reports/html"
+  log_dir: "reports/logs"
+
+# --- Retry Configuration ---
+retry:
+  max_retries: 2                 # Max retries for flaky tests
+  retry_delay: 2                 # Delay between retries in seconds
+
+# --- Parallel Execution ---
+parallel:
+  workers: 4                     # Number of parallel workers (pytest-xdist)
+
+# --- Self-Healing Locators ---
+self_healing:
+  enabled: true                  # Enable self-healing locator strategy
+  fallback_strategies:
+    - "css"
+    - "xpath"
+    - "id"
+    - "name"
+    - "class_name"

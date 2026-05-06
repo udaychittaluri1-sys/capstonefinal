@@ -1,0 +1,37 @@
+# ============================================
+# UI + API Hybrid Automation Framework
+# Requirements File
+# ============================================
+
+# --- Core Testing ---
+pytest==7.4.4
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+pytest-rerunfailures==13.0
+pytest-ordering==0.6
+pytest-timeout==2.2.0
+
+# --- Selenium WebDriver ---
+selenium==4.16.0
+webdriver-manager==4.0.1
+
+# --- API Testing ---
+requests==2.31.0
+
+# --- Reporting ---
+allure-pytest==2.13.2
+allure-python-commons==2.13.2
+
+# --- Configuration ---
+PyYAML==6.0.1
+python-dotenv==1.0.0
+
+# --- Logging ---
+colorlog==6.8.0
+
+# --- Utilities ---
+faker==22.0.0
+jsonschema==4.20.0
+
+# --- Performance ---
+locust==2.20.1

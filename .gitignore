@@ -1,0 +1,41 @@
+# ============================================
+# .gitignore - Python Automation Framework
+# ============================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual Environment
+venv/
+.env
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# Reports (generated)
+reports/allure-results/
+reports/html/
+reports/logs/
+reports/screenshots/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp
+*.tmp
+*.bak
+*.swp
